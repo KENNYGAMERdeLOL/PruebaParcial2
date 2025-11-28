@@ -1,0 +1,41 @@
+case class Producto(nombre: String, categoria: String, precios: List[Double])
+case class ProductoPromedio(producto: Producto, promedio: Double)
+
+def productoMasValioso(
+    productos: List[Producto],
+    valorBase: Double,
+    minPrecios: Int
+): Option[ProductoPromedio] = {
+
+  // 1. Filtrar productos válidos según condiciones
+  val filtrados = productos.filter { p =>
+    val tieneSuficientesPrecios = p.precios.length >= minPrecios
+    val maximoMayorBase = p.precios.max > valorBase
+    tieneSuficientesPrecios && maximoMayorBase
+  }
+
+  // Si no hay productos válidos, devolver None
+  if (filtrados.isEmpty) return None
+
+  // 2. Construir lista de ProductoPromedio calculando el promedio manualmente
+  val listaPromedios: List[ProductoPromedio] =
+    filtrados.map { prod =>
+      // cálculo manual de suma
+      var suma = 0.0
+      for (precio <- prod.precios) {
+        suma += precio
+      }
+      val promedio = suma / prod.precios.length
+      ProductoPromedio(prod, promedio)
+    }
+
+  // 3. Seleccionar manualmente el ProductoPromedio con mayor promedio
+  var mejor = listaPromedios.head
+  for (pp <- listaPromedios.tail) {
+    if (pp.promedio > mejor.promedio) {
+      mejor = pp
+    }
+  }
+
+  Some(mejor)
+}
