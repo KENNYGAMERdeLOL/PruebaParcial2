@@ -84,8 +84,6 @@ object AppInventario {
         mejor = pp
       }
     }
-
-    mejor
   }
 
 
